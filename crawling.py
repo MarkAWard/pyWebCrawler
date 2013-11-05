@@ -45,10 +45,10 @@ def crawl(seed):
         # next page to crawl
         page = tocrawl.pop()
         if page not in crawled:
-            page_source_code = get_page(page)
+            page_source_code = fetch(page)
             add_page_to_index(index, page, page_source_code)
             # add newly found links to the tocrawl list
-            union(tocrawl, get_all_links(page_source))
+            union(tocrawl, get_all_links(page_source_code))
             crawled.append(page)
     return index
 
@@ -56,47 +56,12 @@ def crawl(seed):
 def fetch(url):
     try:
         request = urllib2.urlopen(url)
-        return request.read(100)
+        return request.read(0)
     except:
         return ""
 
 
-def get_source(page):
 
-    source = """<a href= "http://StopEmailingMeETS!!!!" > link this </a><a href= "http://StopEmailingEveryoneETS!!!!" > link this </a><a href= "http://StopEmailingMeETS!!!!" > link this </a><a href= "http://StopEmailingMe!!!!" > link this </a>
-"""
-    return source
-
-
-def get_page(url):
-    try:
-        if url == "http://www.udacity.com/cs101x/index.html":
-            return '''<html> <body> This is a test page for learning to crawl!
-<p> It is a good idea to
-<a href="http://www.udacity.com/cs101x/crawling.html">
-learn to crawl</a> before you try to
-<a href="http://www.udacity.com/cs101x/walking.html">walk</a> or
-<a href="http://www.udacity.com/cs101x/flying.html">fly</a>.</p></body>
-</html>'''
-
-        elif url == "http://www.udacity.com/cs101x/crawling.html":
-            return '''<html> <body> I have not learned to crawl yet, but I am
-quite good at  <a href="http://www.udacity.com/cs101x/kicking.html">kicking</a>.
-</body> </html>'''
-
-        elif url == "http://www.udacity.com/cs101x/walking.html":
-            return '''<html> <body> I cant get enough
-<a href="http://www.udacity.com/cs101x/index.html">crawling</a></body></html>'''
-
-        elif url == "http://www.udacity.com/cs101x/flying.html":
-            return '''<html>
-<body>The magic words are Squeamish Ossifrage!</body></html>'''
-    except:
-        return ""
-    return ""
-
-# check for the keyword in the index and return all urls
-# that are paired with that keyword
 def lookup(index,keyword):
     if keyword in index:
         return index[keyword]
@@ -143,14 +108,3 @@ def split_string(source,splitlist):
                 words[-1] = words[-1] + char
     return words
 
-
-
-index = crawl("http://www.udacity.com/cs101x/index.html")
-print index
-print lookup(index,"test")
-print lookup(index,"or")
-print lookup(index,"crawling")
-
-#print crawled
-#for entry in index:
-#    print entry
